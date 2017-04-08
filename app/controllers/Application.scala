@@ -13,6 +13,10 @@ object Application extends Controller {
     Ok(views.html.index(null))
   }
 
+  def hash = Action {
+    Ok(generation.Hasher.hash(0,0,0).hex)
+  }
+
   def db = Action {
     var out = ""
     val conn = DB.getConnection()
