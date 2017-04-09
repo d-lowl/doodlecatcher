@@ -31,7 +31,12 @@ object ImageGenerator {
   private val LINE_WIDTH: Int = 10
 
   def doodle: Image = {
+    doodle(System.currentTimeMillis())
+  }
+
+  def doodle(seed: Long): Image = {
 //    torso.lineWidth(5.0).lineColor(Color.darkGoldenrod)
+    r.setSeed(seed)
     val baseColor: Color = Color.hsl(r.uniformRangeDouble(0,360).degrees,r.uniformRangeDouble(0.0,1.0).normalized,r.uniformRangeDouble(0.0,0.5).normalized)
 
     (torso.fillColor(baseColor) under (head.fillColor(baseColor) under face(baseColor) at(0,BASE_RADIUS*1.7))).lineColor(baseColor darken 0.1.normalized).lineWidth(LINE_WIDTH)

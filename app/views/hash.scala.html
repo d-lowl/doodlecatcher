@@ -1,0 +1,35 @@
+@(hash: String, difficulty: Int, isCaught: Boolean, seed: Long = 0, time: Long = 0)
+
+@main("Hash") {
+
+<div class="container">
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th>Difficulty</th>
+                <th>@difficulty</th>
+            </tr>
+            <tr>
+                <th>Hash</th>
+                <th>@hash</th>
+            </tr>
+            <tr>
+                <th>Caught?</th>
+                <th>@if(isCaught) {Yes} else {No}</th>
+            </tr>
+            @if(isCaught) {
+            <!-- Image -->
+            <tr>
+                <th>Seed</th>
+                <th><img src="@routes.Assets.at("temp/"+seed+".png")"> </th>
+            </tr>
+            <tr>
+                <th>Time</th>
+                <th>@time</th>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+}
