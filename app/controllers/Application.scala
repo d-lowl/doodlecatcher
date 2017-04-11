@@ -18,7 +18,7 @@ import play.api.db._
 
 object Application extends Controller {
 
-  private val TEMP: String = if(System.getenv("DOODLE_TEMP") != null) System.getenv("DOODLE_TEMP") else ConfigFactory.load().getString("game.temp")
+  private val TEMP: String = ConfigFactory.load().getString("game.temp")
 
   private def absolutePath(path: String = ""): String = TEMP + "/" + path
 
