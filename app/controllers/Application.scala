@@ -1,8 +1,10 @@
 package controllers
 
-import com.typesafe.config.ConfigFactory
+import java.io.File
 
-import scala.reflect.io.File
+import com.typesafe.config.ConfigFactory
+import play.api.Logger
+
 //import com.roundeights.hasher.Digest
 import doodle.core.Image
 //import doodle.core.Image._
@@ -15,9 +17,12 @@ import generation._
 import play.api.mvc._
 //import play.api.cache.Cache
 import play.api.Play.current
+
 import play.api.db._
 
 object Application extends Controller {
+
+  private def absolutePath(path: String = ""): String = new java.io.File(".").getCanonicalPath + "/" + path
 
   def index = Action {
     Ok(views.html.index(null))
@@ -26,10 +31,11 @@ object Application extends Controller {
   def hash(lat: Int, lon: Int) = Action {
     val config = ConfigFactory.load()
     val hasher: Hasher = new Hasher(lat,lon)
-
+    println(absolutePath("public/temp/"+hasher.getSeed()+".png"))
+    Logger.logger.debug(absolutePath("public/temp/"+hasher.getSeed()+".png"))
     if(config.getInt("game.difficulty") <= hasher.getDifficulty) {
       val doodle: Image = ImageGenerator.doodle(hasher.getSeed())
-      doodle.save[Png]("public/temp/"+hasher.getSeed()+".png")
+      doodle.save[Png](absolutePath("public/temp/"+hasher.getSeed()+".png"))
       Thread.sleep(200)
 //      import java.nio.file.{Paths, Files}
 //      while(!Files.exists(Paths.get("public/temp/"+hasher.getSeed()+".png"))) {
@@ -43,6 +49,10 @@ object Application extends Controller {
 
 
   }
+//
+//  def getImage(path: String) = Action {
+//    Ok(new File(path))
+//  }
 
   def db = Action {
     var out = ""
