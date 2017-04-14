@@ -58,6 +58,7 @@ function getLocation(callback) {
     } else {
         callback({coords: {latitude: 0, longitude: 0}})
     }
+    console.log("changed")
 }
 
 new Clipboard('#btn-signature', {
