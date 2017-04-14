@@ -44,14 +44,19 @@ function updateModel(position,callback) {
     .done(function(data){
         model = collect(model, data)
     })
+    .error(function(err){
+        console.log(err)
+    })
     .always(callback)
 }
 
 function getLocation(callback) {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(callback);
+        navigator.geolocation.getCurrentPosition(callback,function(err) {
+            callback({coords: {latitude: 0, longitude: 0}})
+        });
     } else {
-        callback(null)
+        callback({coords: {latitude: 0, longitude: 0}})
     }
 }
 
