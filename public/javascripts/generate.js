@@ -51,13 +51,15 @@ function updateModel(position,callback) {
 }
 
 function getLocation(callback) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(callback,function(err) {
-            callback({coords: {latitude: 0, longitude: 0}})
-        });
-    } else {
-        callback({coords: {latitude: 0, longitude: 0}})
-    }
+    callback({coords: {latitude: 0, longitude: 0}})
+
+//    if (navigator.geolocation) {
+//        navigator.geolocation.getCurrentPosition(callback,function(err) {
+//            callback({coords: {latitude: 0, longitude: 0}})
+//        });
+//    } else {
+//        callback({coords: {latitude: 0, longitude: 0}})
+//    }
 }
 
 new Clipboard('#btn-signature', {
