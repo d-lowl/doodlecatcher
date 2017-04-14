@@ -23,31 +23,10 @@ object Hasher {
 
   val SALT: String = ConfigFactory.load().getString("application.secret")
 
-  def main(args: Array[String]): Unit = {
-//    val lon: Int = 10
-//    val lat: Int = 25
-//
-//    val difficulties: Array[Int] = new Array[Int](41)
-//
-//    var t = System.currentTimeMillis()
-//    val max = Int.MaxValue
-//    for(i <- 0 until max) {
-//      if(i % 1000000 == 0)
-//        println(""+i+"/"+max)
-//      val d = getDifficulty(hash(lat,lon,t).bytes)
-////      println("Difficulty: "+d)
-//      difficulties(d) += 1
-//      t += 1
-//    }
-//
-//    println("============")
-//    println(difficulties.to)
-  }
-
 }
 
-class Hasher(lat: Int, lon: Int) {
-  private val (digest,time): (Digest,Long) = hash(lat,lon)
+class Hasher(lat: Int, lon: Int, _time: Option[Long] = None) {
+  private val (digest,time): (Digest,Long) = hash(lat,lon,_time.getOrElse(System.currentTimeMillis()))
 
   private def hash(lat: Int, lon: Int, time: Long): (Digest,Long) = {
     require(lat <= 90 && lat >= -90)//1 byte

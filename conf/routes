@@ -4,8 +4,14 @@
 
 # Home page
 GET     /                           controllers.Application.index
-GET     /db                         controllers.Application.db
-GET     /hash                       controllers.Application.hash(lat: Int, lon: Int)
+
+# Web controller
+GET     /web/generate               controllers.WebController.generate()
+GET     /web/verify                 controllers.WebController.verify()
+
+# JSON controller
+GET     /api/generate               controllers.JsonController.generate(lat: Int, lon: Int)
+GET     /api/verify                 controllers.JsonController.verify(lat: Int, lon: Int, time: Long, hash: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

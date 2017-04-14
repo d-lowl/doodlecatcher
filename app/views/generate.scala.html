@@ -1,0 +1,49 @@
+@main("Hash") {
+
+<div class="container">
+    <div class="row">
+        <div class="btn-group">
+            <button id="btn-again" type="button" class="btn btn-primary">Try Again</button>
+            <button id="btn-signature" type="button" class="btn btn-primary">Copy Signature to Clipboard</button>
+            <a id="btn-pic" type="button" class="btn btn-primary" href="" download>Save Picture</a>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table table-striped">
+            <tbody>
+            <tr id="difficulty">
+                <td>Difficulty</td>
+                <td></td>
+            </tr>
+            <tr id="hash">
+                <td>Hash</td>
+                <td></td>
+            </tr>
+            <tr id="location">
+                <td>Location</td>
+                <td></td>
+            </tr>
+            <tr id="caught">
+                <td>Caught?</td>
+                <td></td>
+            </tr>
+            <tr id="picture">
+                <td>Picture</td>
+                <td> <img style="max-height: 750px;" src=""> </td>
+            </tr>
+            <tr id="seed">
+                <td>Seed</td>
+                <td></td>
+            </tr>
+            <tr id="time">
+                <td>Time</td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/common.js")"></script>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/generate.js")"></script>
+
+}
