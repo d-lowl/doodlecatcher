@@ -7,6 +7,7 @@ import doodle.syntax._
 import doodle.jvm.Java2DCanvas._
 import doodle.backend.StandardInterpreter._
 import doodle.backend.Formats._
+import doodle.core.transform.Transform.verticalReflection
 import doodle.core.PathElement.{BezierCurveTo, LineTo, MoveTo}
 
 import scala.util.Random
@@ -17,10 +18,6 @@ object ImageGenerator {
   protected val r: Statistics = new Statistics()
 
   def main(args: Array[String]): Unit = {
-//    println(ConfigFactory.load().getString("hasher.salt"))
-
-//    circle(50).fillColor(Color.red).lineWidth(5.0).draw
-
     for (_ <- 1 to 10)
       doodle.draw
   }
@@ -35,17 +32,36 @@ object ImageGenerator {
   }
 
   def doodle(seed: Long): Image = {
-//    torso.lineWidth(5.0).lineColor(Color.darkGoldenrod)
     r.setSeed(seed)
     val baseColor: Color = Color.hsl(r.uniformRangeDouble(0,360).degrees,r.uniformRangeDouble(0.0,1.0).normalized,r.uniformRangeDouble(0.25,0.5).normalized)
 
-    (torso.fillColor(baseColor) under (head.fillColor(baseColor) under face(baseColor) at(0,BASE_RADIUS*1.7))).lineColor(baseColor darken 0.1.normalized).lineWidth(LINE_WIDTH)
-//    (head under face).lineWidth(5.0).lineColor(Color.darkRed)
+    val _hand: Image = hand
+    val leftHand: Image = (_hand.fillColor(baseColor) at(0,-BASE_RADIUS*0.75) rotate r.uniformRangeDouble(25,120).degrees) at(BASE_RADIUS*0.6,BASE_RADIUS*0.6)
+    val rightHand: Image = (_hand.transform(verticalReflection).fillColor(baseColor) at(0,-BASE_RADIUS*0.75) rotate (-r.uniformRangeDouble(25,120)).degrees) at(-BASE_RADIUS*0.6,BASE_RADIUS*0.6)
+
+    val _leg: Image = leg
+    val leftLeg: Image = (_leg.fillColor(baseColor) at(0,-BASE_RADIUS*0.75) rotate r.uniformRangeDouble(0,25).degrees) at(BASE_RADIUS*0.5,-BASE_RADIUS*0.6)
+    val rightLeg: Image = (_leg.transform(verticalReflection).fillColor(baseColor) at(0,-BASE_RADIUS*0.75) rotate (-r.uniformRangeDouble(0,25)).degrees) at(-BASE_RADIUS*0.5,-BASE_RADIUS*0.6)
+
+    (leftLeg under rightLeg under leftHand under rightHand under torso.fillColor(baseColor) under (head.fillColor(baseColor) under face(baseColor) at(0,BASE_RADIUS*1.7))).lineColor(baseColor darken 0.1.normalized).lineWidth(LINE_WIDTH) rotate r.uniformRangeDouble(-20,20).degrees
+  }
+
+  private val LIMB_MIN_POINTS: Int = 6
+  private val LIMB_MAX_POINTS: Int = 18
+  private val LIMB_SYMMETRY_PROB: Double = 0.3
+
+  def hand: Image = {
+    BezierShape.get(r,r.uniformRangeInt(LIMB_MIN_POINTS,LIMB_MAX_POINTS),BASE_RADIUS/2,BEZIER_SHAPE_MAX_ANGLE,0.0,2.0,r.booleanBinary(LIMB_SYMMETRY_PROB), x_scale = 0.5, y_scale = 1.5)
+  }
+
+  def leg: Image = {
+    BezierShape.get(r,r.uniformRangeInt(LIMB_MIN_POINTS,LIMB_MAX_POINTS),BASE_RADIUS/2,BEZIER_SHAPE_MAX_ANGLE,0.0,2.0,r.booleanBinary(LIMB_SYMMETRY_PROB), x_scale = 0.5, y_scale = 1.5)
   }
 
   private val TORSO_MIN_POINTS: Int = 4
   private val TORSO_MAX_POINTS: Int = 10
   private val TORSO_SYMMETRY_PROB: Double = 0.95
+
 
   def torso: Image = {
     BezierShape.get(r,r.uniformRangeInt(TORSO_MIN_POINTS,TORSO_MAX_POINTS),BASE_RADIUS,BEZIER_SHAPE_MAX_ANGLE,0.0,2.0,r.booleanBinary(TORSO_SYMMETRY_PROB), x_scale = 0.7, y_scale = 1.2)
@@ -90,8 +106,6 @@ object ImageGenerator {
 
 object BezierShape{
 
-//  private val r: Statistics = ImageGenerator.r
-
   def optimalCircularDistance(n: Int): Double = {
     4.0/3.0*Math.tan(Math.PI/(2.0*n))
   }
@@ -122,10 +136,8 @@ object BezierShape{
 
     for(i <- 0 until n) {
       list = list ::: List(bezierCurve(alpha, (alpha.toDegrees*i).degrees, d, c_muls((2*i)%(n*2)), c_muls((2*i+1)%(n*2)), c_gammas(i%n).degrees, c_gammas((i+1)%n).degrees, y_scale, x_scale))
-//      image = bezierCurve(alpha, (alpha.toDegrees*i).degrees, d, c_muls((2*i)%(n*2)), c_muls((2*i+1)%(n*2)), c_gammas(i%n).degrees, c_gammas((i+1)%n).degrees, y_scale, x_scale) on image
     }
     ClosedPath(list).rotate(90.degrees)
-//    image.rotate(90.degrees)
   }
 
   def scalePoint(p: Point, x_scale: Double, y_scale: Double): Point = {
@@ -150,15 +162,6 @@ object BezierShape{
     val c_p2 = scalePoint(Point(d*c_mul2,gamma2.degrees+c_gamma2),x_scale,y_scale)+p2.toVec
 
     BezierCurveTo(c_p1,c_p2,p2)
-    //    val image = OpenPath(List(
-//      MoveTo(p1),
-//      BezierCurveTo(c_p1,c_p2,p2)
-//    ))
-//
-//    if(ImageGenerator.DEBUG_MARKERS)
-//      image on (circle(d.toDouble/20) lineColor Color.red at c_p1.toVec) on (circle(d.toDouble/20) lineColor Color.green at c_p2.toVec) on (circle(d.toDouble/20) lineColor Color.blueViolet at p1.toVec)
-//    else
-//      image
   }
 
 }
